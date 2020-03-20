@@ -24,11 +24,11 @@ def get_data_jhu(which_data='confirmed cases'):
     Returns pd.DataFrame (index = date, column = country)
 
     Country specific modifications based on the UN list of countries:
-    'Guernsey' and 'Jersey' are merged into 'Guernsey and Jersey'
-    'Congo (Brazzaville)' and 'Republic of the Congo' are merged into 'Congo (Brazzaville)'
     'Serbia' and 'Kosovo' are merged into 'Serbia'
     'Taiwan*' is renamed to 'Taiwan'
     'occupied Palestinian territory' is renamed to 'Palestine'
+    'Gambia, The' is renamed to 'Gambia'
+    'Bahamas, The' is renamed to 'Bahamas',
 
     :param which_data: {'confirmed cases', 'recovered','deaths'}
     :type which_data: str
@@ -49,8 +49,6 @@ def get_data_jhu(which_data='confirmed cases'):
     df = df.set_index('Country')
     df = df.groupby(['Country']).sum()
 
-    # df.loc['Guernsey and Jersey'] = df.loc['Guernsey'] + df.loc['Jersey']
-    df.loc['Congo (Brazzaville)'] = df.loc['Congo (Brazzaville)']
     df.loc['Serbia'] = df.loc['Serbia'] + df.loc['Kosovo']
     df = df.drop(index=[
         'Kosovo',
@@ -61,7 +59,7 @@ def get_data_jhu(which_data='confirmed cases'):
     df.index = pd.to_datetime(df.index)
     df = df.asfreq('d')
 
-    df = df.rename(columns={'The Bahamas': 'Bahamas',
+    df = df.rename(columns={'Bahamas, The': 'Bahamas',
                             'Taiwan*': 'Taiwan',
                             'Gambia, The': 'Gambia',
                             'occupied Palestinian territory': 'Palestine'})
@@ -327,8 +325,8 @@ if __name__ == "__main__":
     plot_timeindex_dataframe(CONF_CASES_DF, COUNTRIES_TO_PLOT,
                              fit=True,
                              fit_window=7,
-                             fit_forecast=21,
-                             # fit_starting_date=date(2020, 3, 1)
+                             fit_forecast=14,
+                             fit_starting_date=date(2020, 3, 9)
                              )
 
     WEEKS_TO_FORECAST = 3
